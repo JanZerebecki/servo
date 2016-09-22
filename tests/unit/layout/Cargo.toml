@@ -11,3 +11,5 @@ doctest = false
 
 [dependencies]
 layout = {path = "../../../components/layout"}
+style = {path = "../../../components/style"}
+app_units = "0.3"

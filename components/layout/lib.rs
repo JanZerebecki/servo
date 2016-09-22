@@ -67,7 +67,7 @@ pub mod context;
 mod data;
 pub mod display_list_builder;
 mod flex;
-mod floats;
+pub mod floats;
 pub mod flow;
 mod flow_list;
 pub mod flow_ref;
