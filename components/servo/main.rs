@@ -84,6 +84,8 @@ fn install_crash_handler() {
 }
 
 fn main() {
+    debug_assert!(false, "It works!");
+
     install_crash_handler();
 
     // Parse the command line options and store them globally
