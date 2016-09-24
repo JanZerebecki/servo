@@ -166,6 +166,8 @@ impl Floats {
     pub fn available_rect(&self, block_start: Au, block_size: Au, max_x: Au)
                           -> Option<LogicalRect<Au>> {
         let list = &self.list;
+        debug!("available_rect: block_start {:?} block_size {:?} max_x {:?} self.offset {:?}",
+                block_start, block_size, max_x, self.offset);
         let block_start = block_start - self.offset.block;
 
         debug!("available_rect: trying to find space at {:?}", block_start);
@@ -181,11 +183,10 @@ impl Floats {
 
         // Find the float collisions for the given range in the block direction.
         for float in list.floats.iter() {
-            debug!("available_rect: Checking for collision against float");
+            debug!("available_rect: Checking for collision against float {:?}", float);
             let float_pos = float.bounds.start;
             let float_size = float.bounds.size;
 
-            debug!("float_pos: {:?}, float_size: {:?}", float_pos, float_size);
             match float.kind {
                 FloatKind::Left if float_pos.i + float_size.inline > max_inline_start &&
                         float_pos.b + float_size.block > block_start &&
@@ -214,6 +215,8 @@ impl Floats {
             }
         }
 
+        debug!("available_rect: r_block_start {:?} r_block_end {:?} l_block_start {:?} l_block_end {:?}",
+                r_block_start, r_block_end, l_block_start, l_block_end);
         // Extend the vertical range of the rectangle to the closest floats.
         // If there are floats on both sides, take the intersection of the
         // two areas. Also make sure we never return a block-start smaller than the
@@ -264,7 +267,7 @@ impl Floats {
             kind: info.kind
         };
 
-        debug!("add_float: added float with info {:?}", new_info);
+        debug!("add_float: adding float with info {:?}", new_info);
 
         let new_float = Float {
             bounds: LogicalRect::from_point_size(
@@ -275,11 +278,14 @@ impl Floats {
             kind: info.kind
         };
 
+        debug!("add_float: added float {:?}", new_float);
+
         self.list.floats = self.list.floats.prepend_elem(new_float);
         self.list.max_block_start = match self.list.max_block_start {
             None => Some(new_float.bounds.start.b),
             Some(max_block_start) => Some(max(max_block_start, new_float.bounds.start.b)),
-        }
+        };
+        debug!("add_float: set max_block_start to {:?}", self.list.max_block_start);
     }
 
     /// Given the three sides of the bounding rectangle in the block-start direction, finds the
